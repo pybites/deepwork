@@ -3,3 +3,4 @@ client_secret.json
 *swp
 __pycache__
 venv
+.env
