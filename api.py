@@ -4,7 +4,6 @@ import os
 import time
 
 from flask import Flask, abort, jsonify, make_response, request, Response
-import pygsheets
 
 from backend import get_sheet, convert_time
 

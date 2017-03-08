@@ -35,7 +35,6 @@ def convert_time(time):
     raise ValueError('not a supported time format, supported = digit or hh:mm')
 
 
-
 if __name__ == "__main__":
     wks = get_sheet()
 
