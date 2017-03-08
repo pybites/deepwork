@@ -1,12 +1,13 @@
 from collections import namedtuple
+from functools import wraps
 import os
+import sys
 import time
 
-from flask import Flask, jsonify, abort, make_response, request
+from flask import Flask, abort, jsonify, make_response, request
 
 from backend import get_sheet, get_next_row, convert_time
 
-BAD_REQUEST = 'Bad request'
 COMMAND = '/dw'
 SLACK_DW_CMD_TOKEN = os.environ.get('SLACK_DW_CMD_TOKEN')
 
@@ -17,9 +18,8 @@ app = Flask(__name__)
 
 
 @app.errorhandler(400)
-def bad_request(error):
-    msg = '{}: {}'.format(BAD_REQUEST, error)
-    return make_response(jsonify({'message': msg}), 400)
+def not_found(error):
+    return make_response(jsonify({'error': 'Bad request'}), 400)
 
 
 @app.route('/api/v1.0/entries', methods=['GET'])
@@ -31,20 +31,20 @@ def get_items():
 @app.route('/api/v1.0/entries', methods=['POST'])
 def post_entry():
     if not request.json or 'token' not in request.json:
-        abort(400, 'missing parameters')
-    token = request.form.get('token')
-    cmd = request.form.get('command')
-    user = request.form.get('user')
-    text = request.form.get('text')
+        abort(400)
+    token = request.json.get('token')
     if token != SLACK_DW_CMD_TOKEN:
-        abort(400, 'wrong slack token')
+        abort(400)
+    cmd = request.json.get('command')
+    user = request.json.get('user')
+    text = request.json.get('text')
     if not cmd == COMMAND:
-        abort(400, 'not the right command')
+        abort(400)
     now = int(time.time())
     try:
         seconds = convert_time(text)
     except ValueError as err:
-        abort(400, err)
+        abort(400)
     text_fields = text.split(' ', 1)
     if len(text_fields) > 1:
         activity = ' '.join(text_fields[1:])

@@ -1,4 +1,5 @@
 from pprint import pprint as pp
+import re
 import sys
 import time
 
@@ -29,9 +30,10 @@ def calc_seconds(hours, minutes):
 
 
 def convert_time(time):
-    if time.isdigit():
+    time = str(time)
+    if re.match(r'^\d+$', time):
         return int(time) * 60 * 60
-    time = time.split(' ', 1)
+    time = time.split(' ', 1)[0]
     if ':' and time.count(':') == 1:
         hours, minutes = time.split(':')
         try:
