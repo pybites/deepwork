@@ -59,17 +59,19 @@ def get_items():
 
 @app.route('/api/v1.0/entries', methods=['POST'])
 def post_entry():
-    if not request.json or 'token' not in request.json:
+    # slack uses request.form, not request.json!
+    print('request.form data: ', request.form)
+    if not request.form or 'token' not in request.form:
         print('No token provided')
         abort(400)
-    token = request.json.get('token')
+    token = request.form.get('token')
     if token != SLACK_DW_CMD_TOKEN:
         print('Wrong slack token')
         abort(400)
-    cmd = request.json.get('command')
-    user = request.json.get('user_name')
-    text = request.json.get('text')
-    print('Request received: ', request.json)
+    cmd = request.form.get('command')
+    user = request.form.get('user_name')
+    text = request.form.get('text')
+    channel_name = request.form.get('channel_name')
     if not cmd == COMMAND:
         print('Wrong command')
         abort(400)
@@ -83,9 +85,8 @@ def post_entry():
     if len(text_fields) > 1:
         activity = ' '.join(text_fields[1:])
     else:
-        activity = ''
+        activity = channel_name
     row = [user, now, seconds, activity]
-    print(row)
     wks.append_row(start='A1', values=row)
     entry = Entry(*row)
     return jsonify(entry), 201
