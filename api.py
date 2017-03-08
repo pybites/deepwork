@@ -64,8 +64,9 @@ def post_entry():
     if token != SLACK_DW_CMD_TOKEN:
         abort(400)
     cmd = request.json.get('command')
-    user = request.json.get('user')
+    user = request.json.get('user_name')
     text = request.json.get('text')
+    print(request.json)
     if not cmd == COMMAND:
         abort(400)
     now = int(time.time())
