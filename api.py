@@ -4,6 +4,7 @@ import os
 import time
 
 from flask import Flask, abort, jsonify, make_response, request, Response
+import pygsheets
 
 from backend import get_sheet, convert_time
 
@@ -14,7 +15,7 @@ SLACK_DW_PW = os.environ.get('SLACK_DW_PW')
 
 Entry = namedtuple('entry', 'user time seconds activity')
 
-sheet = get_sheet()
+wks = get_sheet()
 app = Flask(__name__)
 
 
@@ -52,7 +53,7 @@ def not_found(error):
 @app.route('/api/v1.0/entries', methods=['GET'])
 @requires_auth
 def get_items():
-    entries = sheet.get_all_records()
+    entries = [i[:4] for i in (list(wks)[1:])]
     return jsonify({'entries': entries})
 
 
@@ -84,8 +85,8 @@ def post_entry():
     else:
         activity = ''
     row = [user, now, seconds, activity]
-    index = 2
-    sheet.insert_row(row, index)
+    print(row)
+    wks.append_row(start='A1', values=row)
     entry = Entry(*row)
     return jsonify(entry), 201
 

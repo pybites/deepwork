@@ -1,23 +1,18 @@
-from pprint import pprint as pp
+import os
 import re
 import sys
 import time
 
-import gspread
-from oauth2client.service_account import ServiceAccountCredentials
+import pygsheets
 
 GDOC = "deepworklog"
-
-
-def create_client():
-    scope = ['https://spreadsheets.google.com/feeds']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('client_secret.json', scope)
-    return gspread.authorize(creds)
+USER = os.environ.get('SLACK_DW_USER')
 
 
 def get_sheet():
-    client = create_client()
-    return client.open(GDOC).sheet1
+    gc = pygsheets.authorize(service_file='client_secret.json')
+    sh = gc.open(GDOC)
+    return sh.sheet1
 
 
 def calc_seconds(hours, minutes):
@@ -40,27 +35,20 @@ def convert_time(time):
     raise ValueError('not a supported time format, supported = digit or hh:mm')
 
 
-def show_items():
-    list_of_hashes = sheet.get_all_records()
-    pp(list_of_hashes)
-
 
 if __name__ == "__main__":
-    sheet = get_sheet()
+    wks = get_sheet()
 
     if len(sys.argv) < 2:
         print('Run as {} hh:mm (activity)'.format(sys.argv[0]))
         print('\nCurrently in gdoc:')
-        show_items()
-        sys.exit(1)
+        print([i[:4] for i in (list(wks)[1:])])
 
-    now = int(time.time())
-    entered_time = sys.argv[1]
-    seconds = convert_time(entered_time)
-    activity = sys.argv[2] if len(sys.argv) > 2 else ''
-    row = [now, seconds, activity]
-
-    index = 2
-    sheet.insert_row(row, index)
-
-    show_items()
+    else:
+        now = int(time.time())
+        entered_time = sys.argv[1]
+        seconds = convert_time(entered_time)
+        activity = sys.argv[2] if len(sys.argv) > 2 else ''
+        row = [USER, now, seconds, activity]
+        print(row)
+        wks.insert_rows(row=2, number=1, values=row)
