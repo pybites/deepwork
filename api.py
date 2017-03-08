@@ -59,20 +59,24 @@ def get_items():
 @app.route('/api/v1.0/entries', methods=['POST'])
 def post_entry():
     if not request.json or 'token' not in request.json:
+        print('No token provided')
         abort(400)
     token = request.json.get('token')
     if token != SLACK_DW_CMD_TOKEN:
+        print('Wrong slack token')
         abort(400)
     cmd = request.json.get('command')
     user = request.json.get('user_name')
     text = request.json.get('text')
-    print(request.json)
+    print('Request received: ', request.json)
     if not cmd == COMMAND:
+        print('Wrong command')
         abort(400)
     now = int(time.time())
     try:
         seconds = convert_time(text)
     except ValueError as err:
+        print('Exception converting time: ', err)
         abort(400)
     text_fields = text.split(' ', 1)
     if len(text_fields) > 1:
