@@ -20,11 +20,6 @@ def get_sheet():
     return client.open(GDOC).sheet1
 
 
-def get_next_row(sheet):
-    times = [t for t in sheet.col_values(1) if t.strip()]
-    return len(times) + 1
-
-
 def calc_seconds(hours, minutes):
     return hours * 60 * 60 + minutes * 60
 
@@ -65,7 +60,7 @@ if __name__ == "__main__":
     activity = sys.argv[2] if len(sys.argv) > 2 else ''
     row = [now, seconds, activity]
 
-    next_row = get_next_row(sheet)
-    sheet.insert_row(row, next_row)
+    index = 2
+    sheet.insert_row(row, index)
 
     show_items()

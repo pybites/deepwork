@@ -5,7 +5,7 @@ import time
 
 from flask import Flask, abort, jsonify, make_response, request, Response
 
-from backend import get_sheet, get_next_row, convert_time
+from backend import get_sheet, convert_time
 
 COMMAND = '/dw'
 SLACK_DW_CMD_TOKEN = os.environ.get('SLACK_DW_CMD_TOKEN')
@@ -84,8 +84,8 @@ def post_entry():
     else:
         activity = ''
     row = [user, now, seconds, activity]
-    next_row = get_next_row(sheet)
-    sheet.insert_row(row, next_row)
+    index = 2
+    sheet.insert_row(row, index)
     entry = Entry(*row)
     return jsonify(entry), 201
 
