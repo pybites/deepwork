@@ -22,11 +22,6 @@ def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
     """
-    print(username)
-    print(password)
-    print(SLACK_DW_USER)
-    print(SLACK_DW_PW)
-    print( username == SLACK_DW_USER and password == SLACK_DW_PW)
     return username == SLACK_DW_USER and password == SLACK_DW_PW
 
 
