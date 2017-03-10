@@ -20,10 +20,9 @@ def calc_seconds(hours, minutes):
 
 
 def convert_time(time):
-    time = str(time)
+    time = str(time).split(' ', 1)[0]
     if re.match(r'^\d+$', time):
         return int(time) * 60 * 60
-    time = time.split(' ', 1)[0]
     if ':' and time.count(':') == 1:
         hours, minutes = time.split(':')
         try:
