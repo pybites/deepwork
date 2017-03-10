@@ -1,7 +1,6 @@
 click==6.7
 Flask==0.12
 google-api-python-client==1.6.2
-gunicorn==19.7.0
 httplib2==0.10.3
 itsdangerous==0.24
 Jinja2==2.9.5
@@ -10,10 +9,7 @@ oauth2client==4.0.0
 pyasn1==0.2.3
 pyasn1-modules==0.0.8
 pygsheets==1.0.0
-requests==2.13.0
 rsa==3.4.2
 six==1.10.0
-slackclient==1.0.5
 uritemplate==3.0.0
-websocket-client==0.40.0
-Werkzeug==0.11.15
+Werkzeug==0.12
