@@ -19,7 +19,8 @@ app = Flask(__name__)
 
 
 def check_auth(username, password):
-    """This function is called to check if a username /
+    """http://flask.pocoo.org/snippets/8/
+    This function is called to check if a username /
     password combination is valid.
     """
     return username == SLACK_DW_USER and password == SLACK_DW_PW
@@ -58,8 +59,6 @@ def get_items():
 
 @app.route('/api/v1.0/entries', methods=['POST'])
 def post_entry():
-    # slack uses request.form, not request.json!
-    print('request.form data: ', request.form)
     if not request.form or 'token' not in request.form:
         print('No token provided')
         abort(400)
